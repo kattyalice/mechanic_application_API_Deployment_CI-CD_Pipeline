@@ -5,12 +5,11 @@ from .blueprints.customer import customer_bp
 from .blueprints.mechanic import mechanic_bp
 from .blueprints.service_ticket import ticket_bp
 from .blueprints.inventory import inventory_bp
-from config import DevelopmentConfig
 from flask_swagger_ui import get_swaggerui_blueprint
 
-def create_app(config_class=DevelopmentConfig):
+def create_app(config_name="DevelopmentConfig"):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(f"config.{config_name}")
 
     db.init_app(app)
     ma.init_app(app)
@@ -31,9 +30,8 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(ticket_bp, url_prefix="/service-tickets")
     app.register_blueprint(inventory_bp, url_prefix="/inventory")
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-    
-    
+
     with app.app_context():
         Base.metadata.create_all(db.engine)
-        
+
     return app
