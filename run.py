@@ -1,6 +1,6 @@
 from app import create_app
 from app.models import db
-from config import ProcutionConfig
+from config import ProdcutionConfig
 
 app = create_app('ProductionConfig')
 
