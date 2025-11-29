@@ -9,7 +9,11 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 def create_app(config_name="DevelopmentConfig"):
     app = Flask(__name__)
-    app.config.from_object(f"config.{config_name}")
+
+    if not isinstance(config_name, str):
+        app.config.from_object(config_name)
+    else:
+        app.config.from_object(f"config.{config_name}")
 
     db.init_app(app)
     ma.init_app(app)
@@ -18,13 +22,13 @@ def create_app(config_name="DevelopmentConfig"):
 
     SWAGGER_URL = '/api/docs'
     API_URL = '/static/swagger.yaml'
-    
+
     swaggerui_blueprint = get_swaggerui_blueprint(
         SWAGGER_URL,
         API_URL,
         config={'app_name': "Mechanic API Documentation"}
     )
-    
+
     app.register_blueprint(customer_bp, url_prefix="/customers")
     app.register_blueprint(mechanic_bp, url_prefix="/mechanics")
     app.register_blueprint(ticket_bp, url_prefix="/service-tickets")
