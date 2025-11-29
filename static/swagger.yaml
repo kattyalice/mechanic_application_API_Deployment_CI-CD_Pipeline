@@ -4,16 +4,17 @@ info:
   description: "API for managing customers, mechanics, inventory, and service tickets."
   version: "1.0.0"
 
-host: "127.0.0.1:5000"
+# Remove host so Swagger auto-detects (localhost breaks Render)
+
 schemes:
   - "http"
+  - "https"
 
 consumes:
   - "application/json"
 produces:
   - "application/json"
 
-# Security Definitions
 securityDefinitions:
   bearerAuth:
     type: apiKey
@@ -21,8 +22,6 @@ securityDefinitions:
     in: header
 
 paths:
-
-  # Log in authentication
   /customers/login:
     post:
       tags:
@@ -30,10 +29,10 @@ paths:
       summary: "Login endpoint (generates token)"
       description: "Validates customer credentials and returns token."
       parameters:
-        - in: "body"
-          name: "body"
-          required: true
+        - in: body
+          name: body
           description: "Email and password for login."
+          required: true
           schema:
             $ref: "#/definitions/LoginCredentials"
       responses:
@@ -43,22 +42,19 @@ paths:
             $ref: "#/definitions/LoginResponse"
           examples:
             application/json:
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            message: "Login successful"
-            status: "success" 
+              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              message: "Login successful"
+              status: "success"
 
-  # Customers
   /customers:
-    # Create customer
     post:
       tags:
         - Customers
       summary: "Register new customer"
-      description: "Creates a brand new customer account. Email must be unique."
+      description: "Creates a new customer account. Email must be unique."
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Customer registration payload."
+        - in: body
+          name: body
           required: true
           schema:
             $ref: "#/definitions/CreateCustomerPayload"
@@ -68,7 +64,6 @@ paths:
           schema:
             $ref: "#/definitions/CreateCustomerResponse"
 
-    # Get all customers, updated with pagination
     get:
       tags:
         - Customers
@@ -81,12 +76,10 @@ paths:
             $ref: "#/definitions/AllCustomers"
 
   /customers/{customer_id}:
-    # Get customer by ID
     get:
       tags:
         - Customers
       summary: "Get customer by ID"
-      description: "Retrieve a specific customer."
       parameters:
         - name: customer_id
           in: path
@@ -98,20 +91,16 @@ paths:
           schema:
             $ref: "#/definitions/CustomerResponse"
 
-
-    # Update customer
     put:
       tags:
         - Customers
       summary: "Update logged-in customer"
-      description: "Updates the logged-in customer's account. Requires authentication."
       security:
         - bearerAuth: []
       parameters:
-        - in: "body"
-          name: "body"
+        - in: body
+          name: body
           required: true
-          description: "Updated customer info"
           schema:
             $ref: "#/definitions/UpdateCustomerPayload"
       responses:
@@ -120,12 +109,10 @@ paths:
           schema:
             $ref: "#/definitions/UpdateCustomerResponse"
 
-    # Delete customer
     delete:
       tags:
         - Customers
       summary: "Delete logged-in customer"
-      description: "Deletes the logged-in customer's account. Requires authentication."
       security:
         - bearerAuth: []
       responses:
@@ -134,20 +121,15 @@ paths:
           schema:
             $ref: "#/definitions/DeleteCustomerResponse"
 
-  # MECHANICS
   /mechanics:
-
-    # Create mechanic
     post:
       tags:
         - Mechanics
       summary: "Create a mechanic"
-      description: "Registers a new mechanic. Email must be unique."
       parameters:
         - in: body
           name: body
           required: true
-          description: "Mechanic creation payload."
           schema:
             $ref: "#/definitions/CreateMechanicPayload"
       responses:
@@ -156,34 +138,28 @@ paths:
           schema:
             $ref: "#/definitions/CreateMechanicResponse"
 
-    # Get all mechanics, updated with pagination
     get:
       tags:
         - Mechanics
       summary: "Get all mechanics"
-      description: "Supports pagination via ?page=1&per_page=10"
       parameters:
         - name: page
           in: query
           type: integer
-          required: false
         - name: per_page
           in: query
           type: integer
-          required: false
       responses:
         200:
           description: "Mechanics retrieved"
           schema:
             $ref: "#/definitions/AllMechanics"
 
-  # Get mechanic by ID
   /mechanics/{mechanic_id}:
     get:
       tags:
         - Mechanics
       summary: "Get mechanic by ID"
-      description: "Retrieve a specific mechanic."
       parameters:
         - name: mechanic_id
           in: path
@@ -195,12 +171,10 @@ paths:
           schema:
             $ref: "#/definitions/MechanicResponse"
 
-    # Update mechanic
     put:
       tags:
         - Mechanics
       summary: "Update mechanic"
-      description: "Updates a mechanic's info."
       parameters:
         - name: mechanic_id
           in: path
@@ -217,12 +191,10 @@ paths:
           schema:
             $ref: "#/definitions/UpdateMechanicResponse"
 
-    # Delete mechanic
     delete:
       tags:
         - Mechanics
       summary: "Delete mechanic"
-      description: "Deletes a mechanic."
       parameters:
         - name: mechanic_id
           in: path
@@ -234,27 +206,22 @@ paths:
           schema:
             $ref: "#/definitions/DeleteMechanicResponse"
 
-  # Most active mechanic
   /mechanics/most-active:
     get:
       tags:
         - Mechanics
       summary: "Get most active mechanic"
-      description: "Returns mechanics sorted by number of assigned tickets."
       responses:
         200:
           description: "Most active mechanic(s)"
           schema:
             $ref: "#/definitions/AllMechanics"
 
-  # INVENTORY
   /inventory:
-    # Create inventory item
     post:
       tags:
         - Inventory
       summary: "Create inventory item"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       parameters:
@@ -269,22 +236,18 @@ paths:
           schema:
             $ref: "#/definitions/CreateInventoryResponse"
 
-    # Get all inventory items, updated with pagination
     get:
       tags:
         - Inventory
       summary: "Get all inventory items"
-      description: "Supports pagination. Requires authentication."
       security:
         - bearerAuth: []
       parameters:
         - name: page
           in: query
-          required: false
           type: integer
         - name: per_page
           in: query
-          required: false
           type: integer
       responses:
         200:
@@ -292,13 +255,11 @@ paths:
           schema:
             $ref: "#/definitions/AllInventory"
 
-  # Get inventory item by ID
   /inventory/{part_id}:
     get:
       tags:
         - Inventory
       summary: "Get inventory item"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       parameters:
@@ -312,12 +273,10 @@ paths:
           schema:
             $ref: "#/definitions/InventoryResponse"
 
-    # Update inventory item
     put:
       tags:
         - Inventory
       summary: "Update inventory item"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       parameters:
@@ -334,13 +293,11 @@ paths:
           description: "Inventory updated"
           schema:
             $ref: "#/definitions/UpdateInventoryResponse"
-    
-    # Delete inventory item
+
     delete:
       tags:
         - Inventory
       summary: "Delete inventory item"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       parameters:
@@ -354,14 +311,11 @@ paths:
           schema:
             $ref: "#/definitions/DeleteInventoryResponse"
 
-  # SERVICE TICKETS
   /tickets:
-    # Create service ticket
     post:
       tags:
         - Service Tickets
       summary: "Create a service ticket"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       parameters:
@@ -375,21 +329,17 @@ paths:
           schema:
             $ref: "#/definitions/TicketResponse"
 
-    # Get all service tickets, updated with pagination
     get:
       tags:
         - Service Tickets
       summary: "Get all service tickets"
-      description: "Cached for 30 seconds. Supports pagination."
       parameters:
         - name: page
           in: query
           type: integer
-          required: false
         - name: per_page
           in: query
           type: integer
-          required: false
       responses:
         200:
           description: "Tickets retrieved"
@@ -397,12 +347,10 @@ paths:
             $ref: "#/definitions/AllTickets"
 
   /tickets/my-tickets:
-    # Get logged in customers tickets
     get:
       tags:
         - Service Tickets
       summary: "Get logged-in customer's tickets"
-      description: "Requires authentication."
       security:
         - bearerAuth: []
       responses:
@@ -412,19 +360,17 @@ paths:
             $ref: "#/definitions/AllTickets"
 
   /tickets/{ticket_id}/assign-mechanic/{mechanic_id}:
-    # Assigne mechanic to ticket
     put:
       tags:
         - Service Tickets
       summary: "Assign mechanic to ticket"
-      description: "Rate-limited (3 per hour)."
       parameters:
-        - in: path
-          name: ticket_id
+        - name: ticket_id
+          in: path
           required: true
           type: integer
-        - in: path
-          name: mechanic_id
+        - name: mechanic_id
+          in: path
           required: true
           type: integer
       responses:
@@ -434,18 +380,17 @@ paths:
             $ref: "#/definitions/TicketResponse"
 
   /tickets/{ticket_id}/remove-mechanic/{mechanic_id}:
-    # Remove mechanic from ticket
     put:
       tags:
         - Service Tickets
       summary: "Remove mechanic from ticket"
       parameters:
-        - in: path
-          name: ticket_id
+        - name: ticket_id
+          in: path
           required: true
           type: integer
-        - in: path
-          name: mechanic_id
+        - name: mechanic_id
+          in: path
           required: true
           type: integer
       responses:
@@ -455,12 +400,10 @@ paths:
             $ref: "#/definitions/TicketResponse"
 
   /tickets/{ticket_id}/add-part/{part_id}:
-    # Add inventory item
     put:
       tags:
         - Service Tickets
       summary: "Add part to ticket"
-      description: "Customer must own the ticket."
       security:
         - bearerAuth: []
       parameters:
@@ -478,9 +421,7 @@ paths:
           schema:
             $ref: "#/definitions/TicketResponse"
 
-
 definitions:
-  # AUTH
   LoginCredentials:
     type: object
     properties:
@@ -502,7 +443,6 @@ definitions:
       status:
         type: string
 
-  # CUSTOMERS
   CreateCustomerPayload:
     type: object
     properties:
@@ -578,7 +518,6 @@ definitions:
       message:
         type: string
 
-  # MECHANICS
   CreateMechanicPayload:
     type: object
     properties:
@@ -660,7 +599,6 @@ definitions:
       message:
         type: string
 
-  # INVENTORY
   CreateInventoryPayload:
     type: object
     properties:
@@ -721,7 +659,6 @@ definitions:
       message:
         type: string
 
-  # SERVICE TICKETS
   CreateTicketPayload:
     type: object
     properties:
