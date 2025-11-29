@@ -4,10 +4,9 @@ info:
   description: "API for managing customers, mechanics, inventory, and service tickets."
   version: "1.0.0"
 
-# Remove host so Swagger auto-detects (localhost breaks Render)
 
+host: "mechanic-application-api-deployment-ci-m8ex.onrender.com"
 schemes:
-  - "http"
   - "https"
 
 consumes:
