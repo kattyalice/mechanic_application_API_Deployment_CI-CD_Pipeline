@@ -2,7 +2,7 @@ import unittest
 from app import create_app
 from app.extensions import db
 from app.models import Mechanic
-from config import TestingConfig
+from app.config import TestingConfig
 
 
 class TestMechanic(unittest.TestCase):

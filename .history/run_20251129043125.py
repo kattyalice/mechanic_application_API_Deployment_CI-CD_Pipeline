@@ -1,6 +1,6 @@
-from app import create_app
+from flask_app import create_app
 from app.models import db
-from config import ProcutionConfig
+from app.config import ProcutionConfig
 
 app = create_app('ProductionConfig')
 

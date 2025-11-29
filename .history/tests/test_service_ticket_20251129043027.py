@@ -3,7 +3,7 @@ from app import create_app
 from app.extensions import db
 from app.models import Customer, Mechanic, Inventory, ServiceTicket
 from app.utils.auth import encode_token
-from config import TestingConfig
+from app.config import TestingConfig
 
 
 class TestServiceTickets(unittest.TestCase):
